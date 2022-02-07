@@ -3,7 +3,7 @@ import fetchUser from '../services/user'
 
 const UserContext = createContext()
 
-const UserProvider = () => {
+const UserProvider = ({ children }) => {
   const [user, setUser] = useState({})
 
   useEffect(() => {
@@ -15,4 +15,17 @@ const UserProvider = () => {
         throw new Error(`Error: ${error}`)
       })
   }, [])
+
+  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>
 }
+
+const useUser = () => {
+  const context = useContext(UserContext)
+
+  if (context === undefined) {
+    throw new Error('useUser must be used within a UserProvider component')
+  }
+  return context
+}
+
+export { UserProvider, useUser }
